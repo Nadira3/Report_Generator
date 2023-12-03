@@ -23,16 +23,18 @@ class Patient(BaseModel):
             initializes the instance of an object
         """
         super().__init__(*args, **kwargs)
-        self.bio_data()
-        pc = Complaint()
-        pc.patient_id = self.id
-        pc.save()
-        history = History()
-        history.patient_id = self.id
-        history.save()
-        review = Review()
-        review.patient_id = self.id
-        review.save()
+        if not kwargs:
+            self.bio_data()
+            pc = Complaint()
+            pc.patient_id = self.id
+            pc.save()
+            history = History()
+            history.patient_id = self.id
+            history.save()
+            review = Review()
+            review.patient_id = self.id
+            review.save()
+    
 
     def bio_data(self):
         """

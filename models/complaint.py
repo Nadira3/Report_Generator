@@ -9,20 +9,21 @@ from colorama import init
 from termcolor import colored
 from prettytable import PrettyTable
 
-
 init()
 
 def xterize(symptom):
     result = {}
-    pain_parameters = ['site', 'onset', 'character', 'radiation', 'associated_symptoms', 'aggravating_factor', 'relieving_factor', 'timing', 'severity']
-    swelling_parameters = ['site', 'size', 'shape', 'surface', 'surrounding_skin', 'base', 'edge', 'tenderness', 'neurovascular_component']
-    vomit_paramters = ['volume', 'color', 'associated_symptoms', 'timing', 'nature', 'precipitant']
-    bleeding_parameters = ['site', 'volume', 'color']
+    character_dict = {
+        'pain': ['site', 'onset', 'character', 'radiation', 'associated_symptoms', 'aggravating_factor', 'relieving_factor', 'timing', 'severity'],
+        'swelling': ['site', 'size', 'shape', 'surface', 'surrounding_skin', 'base', 'edge', 'tenderness', 'neurovascular_component'],
+        'vomit': ['volume', 'color', 'associated_symptoms', 'timing', 'nature', 'precipitant'],
+        'bleeding': ['site', 'volume', 'color', 'associated_symptoms']
+    }
 
-    parameters = pain_parameters if 'pain' in symptom else swelling_parameters
-    for parameter in parameters:
-        result[parameter] = input(f"characterize the {colored(symptom, 'blue')} with {colored(parameter, 'blue')} => ")
+    for parameter in character_dict[symptom]:
+        result[parameter] = input(f"characterize the [{colored(symptom, 'blue')}] with [{colored(parameter, 'blue')}] => ")
     return result
+
 
 class Complaint(BaseModel):
     """
@@ -61,6 +62,15 @@ class Complaint(BaseModel):
                 'musculoskeletal': ['Aches_or_pains_in_muscles_or_bones_or_joints', 'Swelling_joints', 'Limitation_of_joint_movements', 'Locking', 'Weakness', 'Disturbances_of_gait', 'Swelling', 'Wasting']
                 }
         for symptom in Complaint.pc.keys():
+            the_five_cs = ['complaint', 'cause', 'course', 'complication', 'care_so_far']
+            # analyze the symptom
+            for cee in the_five_cs:
+                if cee == "complaint":
+                    Complaint.hpc[cee] = symptom
+                else:
+                    Complaint.hpc[cee] = input(f"Write on the [{colored(cee, 'blue')}] of this symptom =>  ")
+            
+
             data = list(direct_questions.keys())
             column = ['Index', "System List"]
             myTab = PrettyTable()
@@ -75,11 +85,13 @@ class Complaint(BaseModel):
                     Utils.print_center(colored("Systematic direct questions", 'green'))
                     for system_symptom in direct_questions[system]:
                         response = input(f"Enter in details the history of this symptom if present [{colored(system_symptom, 'blue')}] => ")
-                        if response != '' and (['pain', 'swelling'] in system_symptom):
-                            catch = 'pain' if 'pain' in system_symptom else 'swelling'
+                        if response != '' and Utils.checkLine(system_symptom):
+                            catch = Utils.checkLine(system_symptom)
                             Complaint.hpc[system_symptom] = xterize(catch)
                         else:
                             Complaint.hpc[system_symptom] = response
                 else:
                     print(colored("System not in the list, spell correctly in small letters", "black", "on_red"))
+
+
         self.history_of_complaint = Complaint.hpc

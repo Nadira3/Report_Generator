@@ -104,6 +104,7 @@ class ReportManager(cmd.Cmd):
                             instance.to_dict()
                             print(instance)
 
+    
     def do_destroy(self, line):
         """
             destroys an instance of a class
@@ -134,9 +135,10 @@ class ReportManager(cmd.Cmd):
                             try:
                                 if obj['patient_id'] == arg_list[1]:
                                     del (all_objs[obj_id])
-                            except AttributeError:
+                            except (AttributeError, KeyError):
                                 pass
                     storage.save()
+
 
     def do_all(self, line):
         """
@@ -250,6 +252,40 @@ class ReportManager(cmd.Cmd):
                 if obj["__class__"] == arg_list[0]:
                     all_objs_list.append(obj)
             print(len(all_objs_list))
+    
+    
+    def do_report(self, line):
+        """
+            generate a comprehensive report for a Patient's class
+            Usage: report <class_name> <instance.id>
+                   <class_name>.destroy("<instance.id>")
+            action: prints instance.__dict__
+                    saves changes to file
+        """
+        if not line:
+            print("** class name missing **")
+        else:
+            arg_list = cmd.Cmd.parseline(self, line)
+            if arg_list[0] not in classFind():
+                print("** class doesn't exist **")
+            elif len(arg_list[2].split()) < 2:
+                print("** instance id missing **")
+            else:
+                instance_key = arg_list[0] + "." + arg_list[1]
+                all_objs = storage.all()
+                if instance_key not in all_objs:
+                    print("** no instance found **")
+                else:
+                    for obj_id in all_objs.copy().keys():
+                        obj = all_objs[obj_id]
+                        if obj['id'] == arg_list[1]:
+                            print(all_objs[obj_id])
+                        else:
+                            try:
+                                if obj['patient_id'] == arg_list[1]:
+                                    print (all_objs[obj_id])
+                            except (AttributeError, KeyError):
+                                pass
 
 
 if __name__ == '__main__':

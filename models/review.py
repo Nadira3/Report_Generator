@@ -11,9 +11,6 @@ class Review(BaseModel):
         Review class for other classes
     """
 
-    patient_id = ""
-    text = ""
-
     def __init__(self, *args, **kwargs):
         """
             initializes the instance of an object

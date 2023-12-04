@@ -17,13 +17,29 @@ from class_find import classFind
 from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
 from models import storage
+from models.utils import Utils
+from termcolor import colored
 
 class ReportManager(cmd.Cmd):
     """
         command line interpreter
     """
 
-    prompt = "--> " if sys.stdin.isatty() else "--> \n"
+
+    prompt = "\033[92m🚀 > \033[0m"
+
+
+    def preloop(self):
+        print()
+        Utils.print_center(colored("Welcome to Clerking_Report_Generator".center(30, '×'), "black", "on_red"))
+        # Call the function to display the animation
+        print()
+
+
+    def postloop(self):
+        print()
+        Utils.print_center(colored("Bye!!".center(30, '×'), "black", "on_red"))
+        print()
 
     def do_quit(self, line):
         """

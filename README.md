@@ -1,6 +1,6 @@
-# HBNB Console Documentation
+# Report Generator Console Documentation
 
-In this repository, the first part is handled: The console, this is the first step towards building my first full web application: the AirBnB clone. In this part, a command line interpreter was created to manipulate data without a visual interface also including a first Store Engine.
+In this repository, the first part is handled: The console, this is the first step towards building my first full web application: the Report Generator. In this part, a command line interpreter was created to manipulate data without a visual interface also including a first Store Engine.
 
 <div align="center"><img src="framework.png" width="600px"/></div>
 

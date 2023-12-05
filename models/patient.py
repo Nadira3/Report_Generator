@@ -65,8 +65,10 @@ class Patient(BaseModel):
         print()
         print(myTab)
         Utils.print_center(colored("If all patient's data have been taken, press ENTER => ".upper(), 'red'))
+        Patient.biodata['unit'] = []
         while (unit := input(colored("Enter the name of the patient's unit from the table for unique data entry => ", "green"))) != '':
             if unit.lower().strip() in biodata_dict:
+                Patient.biodata['unit'].append(unit)
                 data_list = biodata_dict[unit]
                 for data in data_list:
                     Patient.biodata[data] = input(f"[{colored(data, 'blue')}] => ")

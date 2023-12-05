@@ -258,6 +258,23 @@ class ReportManager(cmd.Cmd):
                 if obj["__class__"] == arg_list[0]:
                     all_objs_list.append(obj)
             print(len(all_objs_list))
+
+    def do_save(self, line):
+        path = "reports"
+        file_path = line.split()[0] + '_' + line.split()[1]
+    
+        # Check whether the specified path exists or not
+        isExist = os.path.exists(path)
+        if not isExist:
+
+            # Create a new directory because it does not exist
+            os.makedirs(path)
+            print("A new directory is created!")
+        os.chdir(path)
+        
+        with open(file_path, "a+", encoding="utf-8") as file:
+            file.write(ReportManager.report)
+        os.chdir('..')
     
     
     def do_report(self, line):
@@ -272,6 +289,7 @@ class ReportManager(cmd.Cmd):
         if cmd.Cmd.onecmd(self, f"checkLine {nline}"):
             arg_list = cmd.Cmd.parseline(self, line)
             all_objs = storage.all()
+            biodata = []
             for obj_id in all_objs.copy().keys():
                 obj = all_objs[obj_id]
                 if obj['id'] == arg_list[1]:
@@ -297,29 +315,27 @@ class ReportManager(cmd.Cmd):
                     tribe = biodata['tribe'].lower()
                     educational_level = biodata['educational_level'].lower()
 
-                    ReportManager.report += f"I am presenting {title} {name_initials}, a {age}-year-old {occupation} who resides at {address}. {pronoun} is {tribe} and a {religion} with {educational_level} level of education."
+                    ReportManager.report += f"      I am presenting {title} {name_initials}, a {age}-year-old {occupation} who resides at {address}. {pronoun} is {tribe} and a {religion} with {educational_level} level of education."
 
-                    path = "reports"
-                    file_path = biodata['first_name'] + '_' + patient_data['id']
-    
-                    # Check whether the specified path exists or not
-                    isExist = os.path.exists(path)
-                    if not isExist:
-
-                        # Create a new directory because it does not exist
-                        os.makedirs(path)
-                        print("A new directory is created!")
-                        os.chdir(path)
-        
-                    with open(file_path, "w+", encoding="utf-8") as file:
-                        file.write(ReportManager.report)
                 else:
                     try:
                         if obj['patient_id'] == arg_list[1]:
-                            if all_objs[obj_id]['__class__'] == 'Complaint':
-                                patient_complaint = all_objs[obj_id]
+                            if obj['__class__'] == 'Complaint':
+                                complaint = obj['complaint']
+                                file_path = biodata['first_name'] + ' ' + obj['patient_id']
+
+                                com_list = list(complaint.keys())
+                                for com in com_list:
+                                    ReportManager.report += f"\n    {pronoun.capitalize()} presented with {com} of {complaint[com]} days duration, "
+                                ReportManager.report += "and was admitted via the accident and emergency ward.\n\t\033[92m History of Presenting Complaints \033[0m\n"
+                                history = obj['history_of_complaint']
+                                hist_list = list(history.keys())
+                                for his in hist_list:
+                                    ReportManager.report += f"{his}: {history[his]}\n" if history[his] != '' else f"no {his}, "
+                                cmd.Cmd.onecmd(self, f"save {file_path}")
+                                print("Report Compilation Complete..")
                     except (AttributeError, KeyError):
-                        pass
+                        continue
 
 
 if __name__ == '__main__':

@@ -3,6 +3,7 @@
     module that handles the console
 """
 
+import os
 import re
 import sys
 import cmd
@@ -27,6 +28,7 @@ class ReportManager(cmd.Cmd):
 
 
     prompt = "\033[92m🚀 > \033[0m"
+    report = ""
 
 
     def preloop(self):
@@ -66,6 +68,33 @@ class ReportManager(cmd.Cmd):
         """
         pass
 
+    def do_checkLine(self, line):
+        if not line:
+            print("** class name missing **")
+            return False
+        else:
+            arg_list = cmd.Cmd.parseline(self, line)
+            if arg_list[0] not in classFind():
+                print("** class doesn't exist **")
+                return False
+            elif len(arg_list[2].split()) <= 2:
+                print("** instance id missing **")
+                return False
+            else:
+                flag = (arg_list[2].split())[-1]
+                instance_key = arg_list[0] + "." + arg_list[1].split()[0]
+                all_objs = storage.all()
+                if instance_key not in all_objs:
+                    print("** no instance found **")
+                    return False
+                if int(flag) and len(arg_list[2].split()) == 3:
+                    print("** attribute name missing **")
+                    return False
+                if int(flag) and len(arg_list[2].split()) == 4:
+                    print("** value missing **")
+                    return False
+        return True
+
     def do_create(self, class_name):
         """
             creates a new instance of a class
@@ -94,33 +123,18 @@ class ReportManager(cmd.Cmd):
                    <class_name>.show("<instance.id>")
             action: prints instance.__dict__
         """
-        if not line:
-            print("** class name missing **")
-        else:
+        nline = line + ' 0'
+        if cmd.Cmd.onecmd(self, f"checkLine {nline}"):
             arg_list = cmd.Cmd.parseline(self, line)
-            if arg_list[0] not in classFind():
-                print("** class doesn't exist **")
-            elif len(arg_list[2].split()) < 2:
-                print("** instance id missing **")
-            else:
-                instance_key = arg_list[0] + "." + arg_list[1]
-                all_objs = storage.all()
-                if instance_key not in all_objs:
-                    print("** no instance found **")
-                else:
-                    for obj_id in all_objs.copy().keys():
-                        obj = all_objs[obj_id]
-                        if obj['id'] == arg_list[1]:
-                            # Get the class from the global namespace
-                            my_class = globals()[arg_list[0]]
+            all_objs = storage.all()
+            for obj_id in all_objs.keys():
+                obj = all_objs[obj_id]
+                if obj['id'] == arg_list[1]:
+                    my_class = globals()[arg_list[0]]
+                    instance = my_class(**obj)
+                    instance.to_dict()
+                    print(instance)
 
-                            # Instantiate an object from the class
-                            instance = my_class(**obj)
-
-                            instance.to_dict()
-                            print(instance)
-
-    
     def do_destroy(self, line):
         """
             destroys an instance of a class
@@ -129,31 +143,21 @@ class ReportManager(cmd.Cmd):
             action: prints instance.__dict__
                     saves changes to file
         """
-        if not line:
-            print("** class name missing **")
-        else:
+        nline = line + ' 0'
+        if cmd.Cmd.onecmd(self, f"checkLine {nline}"):
             arg_list = cmd.Cmd.parseline(self, line)
-            if arg_list[0] not in classFind():
-                print("** class doesn't exist **")
-            elif len(arg_list[2].split()) < 2:
-                print("** instance id missing **")
-            else:
-                instance_key = arg_list[0] + "." + arg_list[1]
-                all_objs = storage.all()
-                if instance_key not in all_objs:
-                    print("** no instance found **")
+            all_objs = storage.all()
+            for obj_id in all_objs.copy().keys():
+                obj = all_objs[obj_id]
+                if obj['id'] == arg_list[1]:
+                    del (all_objs[obj_id])
                 else:
-                    for obj_id in all_objs.copy().keys():
-                        obj = all_objs[obj_id]
-                        if obj['id'] == arg_list[1]:
+                    try:
+                        if obj['patient_id'] == arg_list[1]:
                             del (all_objs[obj_id])
-                        else:
-                            try:
-                                if obj['patient_id'] == arg_list[1]:
-                                    del (all_objs[obj_id])
-                            except (AttributeError, KeyError):
-                                pass
-                    storage.save()
+                    except (AttributeError, KeyError):
+                        pass
+            storage.save()
 
 
     def do_all(self, line):
@@ -187,37 +191,23 @@ class ReportManager(cmd.Cmd):
             if key is not in dict
                     saves changes to file
         """
-        if not line:
-            print("** class name missing **")
-        else:
+        nline = line + ' 1'
+        if cmd.Cmd.onecmd(self, f"checkLine {nline}"):
             arg_list = cmd.Cmd.parseline(self, line)
-            if arg_list[0] not in classFind():
-                print("** class doesn't exist **")
-            elif len(arg_list[2].split()) == 1:
-                print("** instance id missing **")
-            else:
-                instance_key = arg_list[0] + "." + arg_list[1].split()[0]
-                all_objs = storage.all()
-                if instance_key not in all_objs:
-                    print("** no instance found **")
-                elif len(arg_list[2].split()) == 2:
-                    print("** attribute name missing **")
-                elif len(arg_list[2].split()) == 3:
-                    print("** value missing **")
-                else:
-                    for obj_id in all_objs.copy().keys():
-                        obj = all_objs[obj_id]
-                        if obj['id'] == arg_list[1].split()[0]:
-                            if arg_list[1].split()[1] not in obj:
-                                obj[arg_list[1].split()[1]] = \
-                                        arg_list[1].split()[2].replace('"', '')
-                            else:
-                                for key, value in obj.items():
-                                    if key == arg_list[1].split()[1]:
-                                        obj[key] = \
-                                           arg_list[1].\
-                                           split()[2].replace('"', '')
-                            storage.save()
+            all_objs = storage.all()
+            for obj_id in all_objs.copy().keys():
+                obj = all_objs[obj_id]
+                if obj['id'] == arg_list[1].split()[0]:
+                    if arg_list[1].split()[1] not in obj:
+                        obj[arg_list[1].split()[1]] = \
+                        arg_list[1].split()[2].replace('"', '')
+                    else:
+                        for key, value in obj.items():
+                            if key == arg_list[1].split()[1]:
+                                obj[key] = arg_list[1].\
+                                    split()[2].replace('"', '')
+                    storage.save()
+
     def default(self, line):
         """
             handles:
@@ -278,30 +268,58 @@ class ReportManager(cmd.Cmd):
             action: prints instance.__dict__
                     saves changes to file
         """
-        if not line:
-            print("** class name missing **")
-        else:
+        nline = line + ' 0'
+        if cmd.Cmd.onecmd(self, f"checkLine {nline}"):
             arg_list = cmd.Cmd.parseline(self, line)
-            if arg_list[0] not in classFind():
-                print("** class doesn't exist **")
-            elif len(arg_list[2].split()) < 2:
-                print("** instance id missing **")
-            else:
-                instance_key = arg_list[0] + "." + arg_list[1]
-                all_objs = storage.all()
-                if instance_key not in all_objs:
-                    print("** no instance found **")
+            all_objs = storage.all()
+            for obj_id in all_objs.copy().keys():
+                obj = all_objs[obj_id]
+                if obj['id'] == arg_list[1]:
+                    patient_data = all_objs[obj_id]
+                    biodata = patient_data['biodata']
+
+                    if biodata['first_name'] and biodata['last_name']:
+                        name_initials = biodata['first_name'][0].upper() + '.' + biodata['last_name'][0].upper()
+                    age = biodata['age']
+                    if biodata['sex']:
+                        
+                        sex = "female" if biodata['sex'][0].lower() == "f" else "male"
+
+                    pronoun = "she" if sex == "female" else "he"
+                    occupation = biodata['occupation'].lower()
+                    marital_status = biodata['marital_status'].lower()
+                    if pronoun == "she":
+                        title = "Mrs" if marital_status == "married" else "Miss"
+                    else:
+                        title = "Mr"
+                    address = biodata['address'].lower()
+                    religion = biodata['religion'].lower()
+                    tribe = biodata['tribe'].lower()
+                    educational_level = biodata['educational_level'].lower()
+
+                    ReportManager.report += f"I am presenting {title} {name_initials}, a {age}-year-old {occupation} who resides at {address}. {pronoun} is {tribe} and a {religion} with {educational_level} level of education."
+
+                    path = "reports"
+                    file_path = biodata['first_name'] + '_' + patient_data['id']
+    
+                    # Check whether the specified path exists or not
+                    isExist = os.path.exists(path)
+                    if not isExist:
+
+                        # Create a new directory because it does not exist
+                        os.makedirs(path)
+                        print("A new directory is created!")
+                        os.chdir(path)
+        
+                    with open(file_path, "w+", encoding="utf-8") as file:
+                        file.write(ReportManager.report)
                 else:
-                    for obj_id in all_objs.copy().keys():
-                        obj = all_objs[obj_id]
-                        if obj['id'] == arg_list[1]:
-                            print(all_objs[obj_id])
-                        else:
-                            try:
-                                if obj['patient_id'] == arg_list[1]:
-                                    print (all_objs[obj_id])
-                            except (AttributeError, KeyError):
-                                pass
+                    try:
+                        if obj['patient_id'] == arg_list[1]:
+                            if all_objs[obj_id]['__class__'] == 'Complaint':
+                                patient_complaint = all_objs[obj_id]
+                    except (AttributeError, KeyError):
+                        pass
 
 
 if __name__ == '__main__':

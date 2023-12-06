@@ -332,6 +332,14 @@ class ReportManager(cmd.Cmd):
                                 hist_list = list(history.keys())
                                 for his in hist_list:
                                     ReportManager.report += f"{his}: {history[his]}\n" if history[his] != '' else f"no {his}, "
+                            elif obj['__class__'] == 'History':
+                                ReportManager.report += "\n\t\033[92m History Analysis \033[0m\n"
+                                for history in obj:
+                                    if isinstance(history, dict):
+                                        history_dict = obj[history]
+                                        hist_list = list(history.keys())
+                                        for his in hist_list:
+                                            ReportManager.report += f"{his}: {history_dict[his]}\n" if history_dict[his] != '' else f"no {his}, "
                                 cmd.Cmd.onecmd(self, f"save {file_path}")
                                 print("Report Compilation Complete..")
                     except (AttributeError, KeyError):

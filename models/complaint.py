@@ -21,7 +21,7 @@ def xterize(symptom):
     }
 
     for parameter in character_dict[symptom]:
-        result[parameter] = input(f"characterize the [{colored(symptom, 'blue')}] with [{colored(parameter, 'blue')}] => ")
+        result[parameter] = Utils.safeInput(f"characterize the [{colored(symptom, 'blue')}] with [{colored(parameter, 'blue')}] => ")
     return result
 
 
@@ -43,8 +43,8 @@ class Complaint(BaseModel):
     
     def get_pc(self):
         print(colored("Getting Presenting Complaints..... ", 'green'))
-        while (symptom := input(f"[symptom] => ")) != "":
-            Complaint.pc[symptom] = input("[duration] mins/secs/hrs/days/weeks/months/years => ")
+        while (symptom := Utils.safeInput(f"[symptom] => ")) != "":
+            Complaint.pc[symptom] = Utils.safeInput("[duration] mins/secs/hrs/days/weeks/months/years => ")
         self.complaint = Complaint.pc
 
 
@@ -68,7 +68,7 @@ class Complaint(BaseModel):
                 if cee == "complaint":
                     Complaint.hpc[cee] = symptom
                 else:
-                    Complaint.hpc[cee] = input(f"Write on the [{colored(cee, 'blue')}] of this symptom =>  ")
+                    Complaint.hpc[cee] = Utils.safeInput(f"Write on the [{colored(cee, 'blue')}] of this symptom =>  ")
             
 
             data = list(direct_questions.keys())
@@ -80,11 +80,11 @@ class Complaint(BaseModel):
             myTab.add_column(column[1], data)
             print(myTab)
 
-            while (system := input(f"\nWrite the system this symptom [{colored(symptom, 'blue')}] affects => ")) != "":
+            while (system := Utils.safeInput(f"\nWrite the system this symptom [{colored(symptom, 'blue')}] affects => ")) != "":
                 if system in direct_questions.keys():
                     Utils.print_center(colored("Systematic direct questions", 'green'))
                     for system_symptom in direct_questions[system]:
-                        response = input(f"Enter in details the history of this symptom if present [{colored(system_symptom, 'blue')}] => ")
+                        response = Utils.safeInput(f"Enter in details the history of this symptom if present [{colored(system_symptom, 'blue')}] => ")
                         if response != '' and Utils.checkLine(system_symptom):
                             catch = Utils.checkLine(system_symptom)
                             Complaint.hpc[system_symptom] = xterize(catch)

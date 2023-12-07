@@ -60,18 +60,18 @@ class Patient(BaseModel):
                 'paediatrics': ['mode_of_delivery', 'developmental_milestones']
         }
         for data in biodata_dict['data']:
-            Patient.biodata[data] = input(f"[{colored(data, 'blue')}] => ")
+            Patient.biodata[data] = Utils.safeInput(f"[{colored(data, 'blue')}] => ")
         
         print()
         print(myTab)
         Utils.print_center(colored("If all patient's data have been taken, press ENTER => ".upper(), 'red'))
         Patient.biodata['unit'] = []
-        while (unit := input(colored("Enter the name of the patient's unit from the table for unique data entry => ", "green"))) != '':
+        while (unit := Utils.safeInput(colored("Enter the name of the patient's unit from the table for unique data entry => ", "green"))) != '':
             if unit.lower().strip() in biodata_dict:
                 Patient.biodata['unit'].append(unit)
                 data_list = biodata_dict[unit]
                 for data in data_list:
-                    Patient.biodata[data] = input(f"[{colored(data, 'blue')}] => ")
+                    Patient.biodata[data] = Utils.safeInput(f"[{colored(data, 'blue')}] => ")
             else:
                 print(colored("Enter a valid unit. Make sure the spelling is correct! => ", 'black', 'on_red'))
         self.biodata = Patient.biodata

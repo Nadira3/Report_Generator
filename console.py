@@ -34,7 +34,6 @@ class ReportManager(cmd.Cmd):
     def preloop(self):
         print()
         Utils.print_center(colored("Welcome to Clerking_Report_Generator".center(30, '×'), "black", "on_red"))
-        # Call the function to display the animation
         print()
 
 
@@ -69,6 +68,10 @@ class ReportManager(cmd.Cmd):
         pass
 
     def do_checkLine(self, line):
+        """
+            checkLine handles parameter check
+            completeness for each command
+        """
         if not line:
             print("** class name missing **")
             return False
@@ -260,6 +263,11 @@ class ReportManager(cmd.Cmd):
             print(len(all_objs_list))
 
     def do_save(self, line):
+        """
+            saves a Patient's report in a file
+            Usage: save <class_name> <instance.id>
+                   <class_name>.save("<instance.id>")
+        """
         path = "reports"
         file_path = line.split()[0] + '_' + line.split()[1]
     
@@ -281,8 +289,8 @@ class ReportManager(cmd.Cmd):
         """
             generate a comprehensive report for a Patient's class
             Usage: report <class_name> <instance.id>
-                   <class_name>.destroy("<instance.id>")
-            action: prints instance.__dict__
+                   <class_name>.save("<instance.id>")
+            action:
                     saves changes to file
         """
         nline = line + ' 0'

@@ -1,4 +1,5 @@
 import shutil
+import sys
 
 class Utils:
     def __init__(self):
@@ -20,3 +21,21 @@ class Utils:
                 result = symptom
                 break
         return result if len(result) else None
+
+    @staticmethod
+    def safeInput(text):
+        try:
+            var = input(text)
+            return var
+        except (KeyboardInterrupt, EOFError):
+            print("\nYou are about to terminate a session, all data will be lost if you continue")
+            try:
+                var = input("Would you like to exit this session anyway?! Y/N => ")
+                if var.lower() == "y":
+                    print("Session ended")
+                    sys.exit()
+                while var.lower() != "n":
+                    print("Type either Y/N")
+            except (KeyboardInterrupt, EOFError):
+                print("Session ended")
+                sys.exit()

@@ -44,9 +44,9 @@ class History(BaseModel):
         print(colored("\nAnswer Yes/No for all the following questions, if your response is No, press ENTER\n", "red"))
 
         for history in ph:
-            h = input(f"Does the Px have a previous history of [{colored(history, 'blue')}] => ")
+            h = Utils.safeInput(f"Does the Px have a previous history of [{colored(history, 'blue')}] => ")
             if h != '':
-                History.ph[history] = input(f"Enter in details the history of this illness if present [{colored(history, 'blue')}] => ")
+                History.ph[history] = Utils.safeInput(f"Enter in details the history of this illness if present [{colored(history, 'blue')}] => ")
 
         self.prev_history = History.ph
 
@@ -58,9 +58,9 @@ class History(BaseModel):
                 ]
         print(colored("\nAnswer Yes/No for all the following questions, if your response is No, press ENTER\n", "red"))
         for drug in dh:
-            h = input(f"Has the patient used [{colored(drug, 'blue')}] in the past? => ")
+            h = Utils.safeInput(f"Has the patient used [{colored(drug, 'blue')}] in the past? => ")
             if h != '':
-                History.dh[drug] = input(f"Enter the name of the drug or unascertained if used [{colored(drug, 'blue')}] => ")
+                History.dh[drug] = Utils.safeInput(f"Enter the name of the drug or unascertained if used [{colored(drug, 'blue')}] => ")
         self.drug_history = History.dh
 
 
@@ -69,9 +69,9 @@ class History(BaseModel):
         ih = ['BCG', 'Diphtheria', 'Tetanus', 'COVID', 'Typhoid', 'Whooping_cough', 'Measles']
         print(colored("\nAnswer Yes/No for all the following questions, if your response is No, press ENTER\n", "red"))
         for history in ih:
-            h = input(f"Does the patient have a previous history of [{colored(history, 'blue')}] immunization? => ")
+            h = Utils.safeInput(f"Does the patient have a previous history of [{colored(history, 'blue')}] immunization? => ")
             if h != '':
-                History.ih[history] = input(f"Enter in details the history of this parameter [{colored(history, 'blue')}] => ")
+                History.ih[history] = Utils.safeInput(f"Enter in details the history of this parameter [{colored(history, 'blue')}] => ")
         self.immunization_history = History.ih
 
 
@@ -80,9 +80,9 @@ class History(BaseModel):
         fh = ['Causes_of_death_of_close_relatives', 'Familial_illnesses_in_siblings_and_offspring']
         print(colored("\nAnswer Yes/No for all the following questions, if your response is No, press ENTER\n", "red"))
         for history in fh:
-            h = input(f"Does the patient have a family history of [{colored(history, 'blue')}] => ")
+            h = Utils.safeInput(f"Does the patient have a family history of [{colored(history, 'blue')}] => ")
             if h != '':
-                History.fh[history] = input(f"Enter in details the history of this parameter [{colored(history, 'blue')}] => ")
+                History.fh[history] = Utils.safeInput(f"Enter in details the history of this parameter [{colored(history, 'blue')}] => ")
         self.family_history = History.fh
 
 
@@ -93,7 +93,7 @@ class History(BaseModel):
 
         print(colored("\nAnswer Yes/No for all the following questions, if your response is No, press ENTER\n", "red"))
         for history in sh:
-            h = input(f"Is the social history parameter [{colored(history, 'blue')}] relevant for this patient? => ")
+            h = Utils.safeInput(f"Is the social history parameter [{colored(history, 'blue')}] relevant for this patient? => ")
             if h != '':
-                History.sh[history] = input(f"Enter in details the history of this parameter [{colored(history, 'blue')}] => ")
+                History.sh[history] = Utils.safeInput(f"Enter in details the history of this parameter [{colored(history, 'blue')}] => ")
         self.social_history = History.sh

@@ -1,10 +1,8 @@
 # Report Generator Console Documentation
-
-In this repository, the first part is handled: The console, this is the first step towards building my first full web application: the Report Generator. In this part, a command line interpreter was created to manipulate data without a visual interface also including a first Store Engine.
+In this repository, you'll find the core of a Report Generator. This console application serves as the foundational step towards the development of a comprehensive web application. It operates without a visual interface and incorporates an initial Store Engine.
 
 <div align="center"><img src="framework.png" width="600px"/></div>
-
-The **HBNB Console** is a command-line interface (CLI) for interacting with the "Holberton School New Base" (HBNB) database. It allows you to manage and manipulate instances of various classes, such as User, Place, State, City, Amenity, Review, and more.
+The Report Generator Console provides a command-line interface (CLI) for manipulating data stored in a structured manner. It includes classes such as Patient, Complaint, History, and Review.
 
 <div align="center"><img src="console.png" width="600px"/></div>
 
@@ -28,16 +26,21 @@ The **HBNB Console** is a command-line interface (CLI) for interacting with the 
 
 ### Installation
 
-To use the HBNB Console, you need to have Python 3 installed on your system. Follow these steps to set up the environment:
+To use the Report_Generator, you need to have Python 3 installed on your system. Follow these steps to set up the environment:
 
 1. Clone the HBNB repository:
 
    ```sh
-   git clone https://github.com/Nadira3/AirBnB_clone.git
-   cd AirBnB_clone
+   git clone https://github.com/Nadira3/Report_Generator.git
+   cd Report_Generator
    ```
-
-2. Place the provided `console.py` file into the root directory of the project.
+2. Install the following modules
+    ```sh
+    pip install termcolor
+    pip install prettytable
+    pip install colorama
+    ```
+3. Place the provided `console.py` file into the root directory of the project.
 
 ### Launching the Console
 
@@ -45,13 +48,13 @@ To use the HBNB Console, you need to have Python 3 installed on your system. Fol
 
 2. Navigate to the directory where the `console.py` file is located.
 
-3. Run the following command to start the HBNB Console:
+3. Run the following command to start the Report_Generator:
 
    ```sh
    python3 console.py
    ```
 
-   This will launch the HBNB Console, and you'll see the `(hbnb)` prompt indicating that the console is ready to accept commands.
+   This will launch the Report_Generator, and you'll see the prompt indicating that the console is ready to accept commands.
 
 ## Available Commands
 
@@ -61,7 +64,7 @@ To use the HBNB Console, you need to have Python 3 installed on your system. Fol
   Example:
 
   ```
-  (hbnb) create User
+  =>  create Patient
   05706e96-7951-431d-a5ce-2603b9bae47d
   ```
 
@@ -71,8 +74,8 @@ To use the HBNB Console, you need to have Python 3 installed on your system. Fol
   Example:
 
   ```
-  (hbnb) show User 05706e96-7951-431d-a5ce-2603b9bae47d
-  [User] (05706e96-7951-431d-a5ce-2603b9bae47d) {'id': '05706e96-7951-431d-a5ce-2603b9bae47d', 'created_at': datetime.datetime(2023, 8, 17, 0, 0), 'updated_at': datetime.datetime(2023, 8, 17, 0, 0)}
+  =>  show Patient 05706e96-7951-431d-a5ce-2603b9bae47d
+  [Patient] (05706e96-7951-431d-a5ce-2603b9bae47d) {'id': '05706e96-7951-431d-a5ce-2603b9bae47d', 'created_at': datetime.datetime(2023, 8, 17, 0, 0), 'updated_at': datetime.datetime(2023, 8, 17, 0, 0)}
   ```
 
 ### Deleting Instances
@@ -81,7 +84,7 @@ To use the HBNB Console, you need to have Python 3 installed on your system. Fol
   Example:
 
   ```
-  (hbnb) destroy User 05706e96-7951-431d-a5ce-2603b9bae47d
+  =>  destroy Patient 05706e96-7951-431d-a5ce-2603b9bae47d
   ```
 
 ### Listing Instances
@@ -90,9 +93,9 @@ To use the HBNB Console, you need to have Python 3 installed on your system. Fol
   Example:
 
   ```
-  (hbnb) all
-  [User] (05706e96-7951-431d-a5ce-2603b9bae47d) {'id': '05706e96-7951-431d-a5ce-2603b9bae47d', 'created_at': datetime.datetime(2023, 8, 17, 0, 0), 'updated_at': datetime.datetime(2023, 8, 17, 0, 0)}
-  [Place] (f176d9ad-9bc7-4dd6-aa14-df50e0ab6b3f) {'id': 'f176d9ad-9bc7-4dd6-aa14-df50e0ab6b3f', 'created_at': datetime.datetime(2023, 8, 17, 0, 0), 'updated_at': datetime.datetime(2023, 8, 17, 0, 0)}
+  =>  all
+  [Patient] (05706e96-7951-431d-a5ce-2603b9bae47d) {'id': '05706e96-7951-431d-a5ce-2603b9bae47d', 'created_at': datetime.datetime(2023, 8, 17, 0, 0), 'updated_at': datetime.datetime(2023, 8, 17, 0, 0)}
+  [Complaint] (f176d9ad-9bc7-4dd6-aa14-df50e0ab6b3f) {'id': 'f176d9ad-9bc7-4dd6-aa14-df50e0ab6b3f', 'created_at': datetime.datetime(2023, 8, 17, 0, 0), 'updated_at': datetime.datetime(2023, 8, 17, 0, 0)}
   ...
   ```
 
@@ -102,9 +105,9 @@ To use the HBNB Console, you need to have Python 3 installed on your system. Fol
   Example:
 
   ```
-  (hbnb) update User 05706e96-7951-431d-a5ce-2603b9bae47d first_name "John"
-  (hbnb) show User 05706e96-7951-431d-a5ce-2603b9bae47d
-  [User] (05706e96-7951-431d-a5ce-2603b9bae47d) {'id': '05706e96-7951-431d-a5ce-2603b9bae47d', 'created_at': datetime.datetime(2023, 8, 17, 0, 0), 'updated_at': datetime.datetime(2023, 8, 17, 0, 0), 'first_name': 'John'}
+  =>  update Patient 05706e96-7951-431d-a5ce-2603b9bae47d first_name "John"
+  =>  show Patient 05706e96-7951-431d-a5ce-2603b9bae47d
+  [Patient] (05706e96-7951-431d-a5ce-2603b9bae47d) {'id': '05706e96-7951-431d-a5ce-2603b9bae47d', 'created_at': datetime.datetime(2023, 8, 17, 0, 0), 'updated_at': datetime.datetime(2023, 8, 17, 0, 0), 'first_name': 'John'}
   ```
 
 ### Counting Instances
@@ -113,57 +116,57 @@ To use the HBNB Console, you need to have Python 3 installed on your system. Fol
   Example:
 
   ```
-  (hbnb) count User
+  =>  count Patient
   3
   ```
 
 ### Exiting the Console
 
-- `quit`: Exit the HBNB Console.
+- `quit`: Exit the Report_Generator.
   Example:
 
   ```
-  (hbnb) quit
+  =>  quit
   ```
 
 ## Usage Examples
 
-Here are some examples of how to use the HBNB Console:
+Here are some examples of how to use the Report_Generator:
 
-1. Creating a new User instance:
-
-   ```
-   (hbnb) create User
-   ```
-
-2. Displaying information about a User instance:
+1. Creating a new Patient instance:
 
    ```
-   (hbnb) show User 05706e96-7951-431d-a5ce-2603b9bae47d
+   =>  create Patient
    ```
 
-3. Updating the attributes of a User instance:
+2. Displaying information about a Patient instance:
 
    ```
-   (hbnb) update User 05706e96-7951-431d-a5ce-2603b9bae47d first_name "John"
+   =>  show Patient 05706e96-7951-431d-a5ce-2603b9bae47d
+   ```
+
+3. Updating the attributes of a Patient instance:
+
+   ```
+   =>  update Patient 05706e96-7951-431d-a5ce-2603b9bae47d first_name "John"
    ```
 
 4. Listing all instances:
 
    ```
-   (hbnb) all
+   =>  all
    ```
 
 5. Counting instances of a specific class:
 
    ```
-   (hbnb) count User
+   =>  count Patient
    ```
 
-6. Exiting the HBNB Console:
+6. Exiting the Report_Generator:
 
    ```
-   (hbnb) quit
+   =>  quit
    ```
 
 ## Additional Notes
@@ -171,13 +174,13 @@ Here are some examples of how to use the HBNB Console:
 - If you're using a script or a non-interactive environment, you can pass commands directly to the console using the `-c` flag:
 
   ```sh
-  python3 console.py -c "create User"
+  python3 console.py -c "create Patient"
   ```
 
-- The HBNB Console provides auto-completion and command history functionality, making it easier to navigate and use.
+- The Report_Generator provides auto-completion and command history functionality, making it easier to navigate and use.
 
 - Make sure to follow the correct syntax for each command. Improperly formatted commands may
 
 result in errors or unexpected behavior.
 
-- This documentation provides a basic overview of the HBNB Console and its commands. For more detailed information and advanced usage, refer to the source code and comments in the `console.py` file.
+- This documentation provides a basic overview of the Report_Generator and its commands. For more detailed information and advanced usage, refer to the source code and comments in the `console.py` file.

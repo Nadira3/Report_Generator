@@ -18,6 +18,7 @@ The Report Generator Console provides a command-line interface (CLI) for manipul
    - [Listing Instances](#listing-instances)
    - [Updating Instances](#updating-instances)
    - [Counting Instances](#counting-instances)
+   - [Generating a Report](#generating-a-report)
    - [Exiting the Console](#exiting-the-console)
 3. [Usage Examples](#usage-examples)
 4. [Additional Notes](#additional-notes)
@@ -120,6 +121,22 @@ To use the Report_Generator, you need to have Python 3 installed on your system.
   3
   ```
 
+### Generating a Report
+
+- `report <classname> <instance_id> <attribute_name> <attribute_value>`: Generates a report using the attributes of a specific instance.
+  Example:
+
+  ```
+  =>  report Patient 05706e96-7951-431d-a5ce-2603b9bae47d
+  Report compilation complete...
+  =>  quit
+  User/Report_Generator $ ls
+  User/Report_Generator $ *         reports
+  User/Report_Generator $ ls reports
+  User/Report_Generator $ Patient_05706e96-7951-431d-a5ce-2603b9bae47d
+  User/Report_Generator $ cat reports/Patient_05706e96-7951-431d-a5ce-2603b9bae47d
+  User/Report_Generator $ I am presenting... [rest of report]
+  ```
 ### Exiting the Console
 
 - `quit`: Exit the Report_Generator.

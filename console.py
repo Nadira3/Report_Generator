@@ -10,8 +10,6 @@ import cmd
 import json
 from models.patient import Patient
 from models.complaint import Complaint
-from models.state import State
-from models.city import City
 from models.review import Review
 from models.history import History
 from class_find import classFind

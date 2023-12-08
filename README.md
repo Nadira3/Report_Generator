@@ -1,10 +1,10 @@
 # Report Generator Console Documentation
 In this repository, you'll find the core of a Report Generator. This console application serves as the foundational step towards the development of a comprehensive web application. It operates without a visual interface and incorporates an initial Store Engine.
 
-<div align="center"><img src="framework.png" width="600px"/></div>
+<div align="center"><img src="create.png" width="600px"/></div>
 The Report Generator Console provides a command-line interface (CLI) for manipulating data stored in a structured manner. It includes classes such as Patient, Complaint, History, and Review.
 
-<div align="center"><img src="console.png" width="600px"/></div>
+<div align="center"><img src="complaint.png" width="600px"/></div>
 
 ## Table of Contents
 

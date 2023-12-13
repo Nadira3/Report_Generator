@@ -16,6 +16,7 @@ from class_find import classFind
 from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
 from models import storage
+from prettytable import PrettyTable
 from models.utils import Utils
 from termcolor import colored
 
@@ -32,7 +33,16 @@ class ReportManager(cmd.Cmd):
     def preloop(self):
         print()
         Utils.print_center(colored("Welcome to Clerking_Report_Generator".center(30, '×'), "black", "on_red"))
-        print()
+        column = ['Commands', "Usage"]
+        commands = ['create', 'find', 'show', 'destroy', 'report', 'update', 'all', 'count']
+        myTab = PrettyTable()
+
+        # Add Columns
+        myTab.add_column(column[0], [index for index in commands])
+        myTab.add_column(column[1], [f"help {index}"  for index in commands])
+        
+        print(myTab)
+        print("All classes are dependent on the Patient class")
 
 
     def postloop(self):
@@ -85,6 +95,8 @@ class ReportManager(cmd.Cmd):
                 flag = (arg_list[2].split())[-1]
                 instance_key = arg_list[0] + "." + arg_list[1].split()[0]
                 all_objs = storage.all()
+                if int(flag) > 1:
+                    return True
                 if instance_key not in all_objs:
                     print("** no instance found **")
                     return False
@@ -99,8 +111,9 @@ class ReportManager(cmd.Cmd):
     def do_create(self, class_name):
         """
             creates a new instance of a class
-            Usage:  create <class_name>
+            Usage:  create <class_name> => Patient
                     <class_name>.create()
+                    create Patient
             action: creates an object and prints its allocated id
                     saves to a file
         """
@@ -122,6 +135,8 @@ class ReportManager(cmd.Cmd):
             shows the attributes an instance of a class
             Usage: show <class_name> <instance.id>
                    <class_name>.show("<instance.id>")
+                   Example: show Patient 546-894-904-479
+                            Patient.show(546-894-904-479)
             action: prints instance.__dict__
         """
         nline = line + ' 0'
@@ -134,13 +149,34 @@ class ReportManager(cmd.Cmd):
                     my_class = globals()[arg_list[0]]
                     instance = my_class(**obj)
                     instance.to_dict()
-                    print(instance)
+                    try:
+                        col = [data for data in instance.to_dict().keys()]
+                        bcol = [data for data in obj['biodata'].keys()]
+                        val = [data if not isinstance(data, dict) else "" for data in instance.to_dict().values()] 
+                        column = ["index", "attr", "value"]
+                        myTab = PrettyTable()
+                        bioTab = PrettyTable()
+
+                        myTab.add_column(column[0], [d for d in range(len(col))])
+                        bioTab.add_column(column[0], [d for d in range(len(bcol))])
+                        myTab.add_column(column[1], [d for d in col])
+                        bioTab.add_column(column[1], [d for d in obj['biodata'].keys()])
+                        myTab.add_column(column[2], [d for d in val])
+                        bioTab.add_column(column[2], [d for d in obj['biodata'].values()])
+                        print(myTab)
+                        Utils.print_center("---------------------------------------------")
+                        Utils.print_center("Biodata\n")
+                        print(bioTab)
+                    except KeyError:
+                        print(instance)
 
     def do_destroy(self, line):
         """
             destroys an instance of a class
             Usage: destroy <class_name> <instance.id>
                    <class_name>.destroy("<instance.id>")
+                   Example: destroy Patient 546-894-904-479
+                            Patient.destroy(546-894-904-479)
             action: prints instance.__dict__
                     saves changes to file
         """
@@ -186,6 +222,7 @@ class ReportManager(cmd.Cmd):
             updates an instance of a class
             Usage: update <cls_name> <instance.id> <attr> <value>
                    <cls_name>.update("<instance.id>", "<attr>", "<value>")
+            Example: update Patient 546-894-904-479 family_number +123456789
             action: changes value in instance.__dict__[key]
             if key matches attr
                     creates value in instance.__dict__[key]
@@ -246,7 +283,14 @@ class ReportManager(cmd.Cmd):
     def do_count(self, line):
         """
             counts all the instances of a class and prints the number
-            Usage: <class_name>.count()
+            Usage:  
+                    count <class_name>
+                    <class_name>.count()
+            Example: 
+                     count Patient
+                     Patient.count()
+            action: counts the number of objects of type <class_name>
+                    in json file and prints on the screen
         """
         arg_list = cmd.Cmd.parseline(self, line)
         if arg_list[0] is not None and arg_list[0] not in classFind():
@@ -259,6 +303,50 @@ class ReportManager(cmd.Cmd):
                 if obj["__class__"] == arg_list[0]:
                     all_objs_list.append(obj)
             print(len(all_objs_list))
+
+    def do_find(self, line):
+        """
+            finds the instance_id of a class
+            Usage: 
+                    find <cls_name> <first_name>
+                    find <cls_name> <first_name> <second_name>
+            Example: 
+                    find Patient Andrew
+                    find Patient Andrew Tate
+            action: checks all the saved objects and returns
+                    the id of <first_name> if exists
+        """
+        nline = line + ' 2'
+        flag = 0
+        if cmd.Cmd.onecmd(self, f"checkLine {nline}"):
+            arg_list = cmd.Cmd.parseline(self, line)
+            all_objs = storage.all()
+            for obj_id in all_objs.copy().keys():
+                obj = all_objs[obj_id]
+                ag_list = arg_list[1].split()
+                if len(ag_list) == 1:
+                    if obj['__class__'] == 'Patient':
+                        try:
+                            for data in obj['biodata']:
+                                if isinstance(obj['biodata'][data], str) and\
+                                    ag_list[0].lower() == obj['biodata'][data].lower():
+                                    pat = obj['biodata']
+                                    print(f"The id for {pat['first_name']} {pat['last_name']} is {obj['id']}")
+                                    flag = 1
+                        except KeyError:
+                            pass
+                elif len(ag_list) > 1:
+                    ...
+            if not flag:
+                print("This patient either does not exist or has no biodata filled")
+                ans = Utils.safeInput("Will you like to create a new Patient? Y/N")
+                while ans.lower() not in ['y', 'n']:
+                    ans = input("Type Y/N for the above question")
+                if ans.lower() == "y":
+                    cmd.Cmd.onecmd(self, "create Patient")
+                else:
+                    print("find operation completed. Patient does not exist!")
+
 
     def do_save(self, line):
         """
@@ -278,7 +366,7 @@ class ReportManager(cmd.Cmd):
             print("A new directory is created!")
         os.chdir(path)
         
-        with open(file_path, "a+", encoding="utf-8") as file:
+        with open(file_path, "w+", encoding="utf-8") as file:
             file.write(ReportManager.report)
         os.chdir('..')
     
@@ -289,7 +377,8 @@ class ReportManager(cmd.Cmd):
             Usage: report <class_name> <instance.id>
                    <class_name>.save("<instance.id>")
             action:
-                    saves changes to file
+                    compiles a report using Patients data stored with
+                    <id> and saves changes to file
         """
         nline = line + ' 0'
         if cmd.Cmd.onecmd(self, f"checkLine {nline}"):
@@ -332,7 +421,7 @@ class ReportManager(cmd.Cmd):
 
                                 com_list = list(complaint.keys())
                                 for com in com_list:
-                                    ReportManager.report += f"\n    {pronoun.capitalize()} presented with {com} of {complaint[com]} days duration, "
+                                    ReportManager.report += f"\n    {pronoun.capitalize()} presented with {com} of {complaint[com]} duration, "
                                 ReportManager.report += "and was admitted via the accident and emergency ward.\n\t\033[92m History of Presenting Complaints \033[0m\n"
                                 history = obj['history_of_complaint']
                                 hist_list = list(history.keys())
@@ -353,4 +442,8 @@ class ReportManager(cmd.Cmd):
 
 
 if __name__ == '__main__':
-    ReportManager().cmdloop()
+    try:
+        ReportManager().cmdloop()
+    except KeyboardInterrupt:
+        print("Exiting....")
+        sys.exit()

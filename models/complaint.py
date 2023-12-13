@@ -27,7 +27,7 @@ def xterize(symptom):
 
 class Complaint(BaseModel):
     """
-        Place class for User object
+        Complaint class for User object
     """
     pc = {}
     hpc = {}
@@ -37,9 +37,10 @@ class Complaint(BaseModel):
             initializes the instance of an object
         """
         super().__init__(*args, **kwargs)
-        self.get_pc()
-        self.pc_history()
-        self.save()
+        if not kwargs:
+            self.get_pc()
+            self.pc_history()
+            self.save()
     
     def get_pc(self):
         print(colored("Getting Presenting Complaints..... ", 'green'))

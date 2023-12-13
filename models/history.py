@@ -26,13 +26,14 @@ class History(BaseModel):
             initializes the instance of an object
         """
         super().__init__(*args, **kwargs)
-        print(colored("Getting details of Patient's history...", "green"))
-        self.prev_history()
-        self.drug_history()
-        self.immunization_history()
-        self.family_history()
-        self.social_history()
-        self.save()
+        if not kwargs:
+            print(colored("Getting details of Patient's history...", "green"))
+            self.prev_history()
+            self.drug_history()
+            self.immunization_history()
+            self.family_history()
+            self.social_history()
+            self.save()
 
 
     def prev_history(self):

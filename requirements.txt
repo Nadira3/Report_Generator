@@ -1,0 +1,7 @@
+pycodestyle==2.10.0
+pydocstyle==6.3.0
+coverage==7.2.7
+pip==23.3.1
+colorama
+termcolor
+prettytable

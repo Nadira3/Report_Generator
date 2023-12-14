@@ -14,7 +14,7 @@ from models.review import Review
 from models.history import History
 from class_find import classFind
 from models.engine.file_storage import FileStorage
-from models.base_model import BaseModel
+from models.base_model import BaseModel, tabulate
 from models import storage
 from prettytable import PrettyTable
 from models.utils import Utils
@@ -34,7 +34,7 @@ class ReportManager(cmd.Cmd):
         print()
         Utils.print_center(colored("Welcome to Clerking_Report_Generator".center(30, '×'), "black", "on_red"))
         column = ['Commands', "Usage"]
-        commands = ['create', 'find', 'show', 'destroy', 'report', 'update', 'all', 'count']
+        commands = ['create', 'find', 'show', 'destroy', 'report', 'update', 'all', 'count', 'quit']
         myTab = PrettyTable()
 
         # Add Columns
@@ -53,14 +53,12 @@ class ReportManager(cmd.Cmd):
     def do_quit(self, line):
         """
             Quit command to exit the program
+            Alternative methods to quit the program:
+                => type "quit" and press enter
+                => Ctrl + D
+                => Ctrl + C
         """
         return True
-
-    def help_quit(self):
-        """
-            pretty format for help documentation
-        """
-        print("Quit command to exit the program\n")
 
     def do_EOF(self, line):
         """
@@ -148,27 +146,29 @@ class ReportManager(cmd.Cmd):
                 if obj['id'] == arg_list[1]:
                     my_class = globals()[arg_list[0]]
                     instance = my_class(**obj)
-                    instance.to_dict()
+                    instance.to_table()
+                    int_dict = instance.to_dict()
+                    for data in int_dict.keys():
+                        if isinstance(int_dict[data], dict):
+                            Utils.print_center("----------------------------------")
+                            Utils.print_center(f"{data.capitalize()}\n")
+                            print(tabulate(int_dict[data]))
+                else:
                     try:
-                        col = [data for data in instance.to_dict().keys()]
-                        bcol = [data for data in obj['biodata'].keys()]
-                        val = [data if not isinstance(data, dict) else "" for data in instance.to_dict().values()] 
-                        column = ["index", "attr", "value"]
-                        myTab = PrettyTable()
-                        bioTab = PrettyTable()
+                        if obj['patient_id'] == arg_list[1]:
+                            my_class = globals()[arg_list[0]]
+                            instance = my_class(**obj)
+                            instance.to_table()
+                            int_dict = instance.to_dict()
+                            for data in int_dict.keys():
+                                if isinstance(int_dict[data], dict):
+                                    Utils.print_center("----------------------------------")
+                                    Utils.print_center(f"{data.capitalize()}\n")
+                                    print(tabulate(int_dict[data]))
+                            
+                    except (AttributeError, KeyError):
+                        continue
 
-                        myTab.add_column(column[0], [d for d in range(len(col))])
-                        bioTab.add_column(column[0], [d for d in range(len(bcol))])
-                        myTab.add_column(column[1], [d for d in col])
-                        bioTab.add_column(column[1], [d for d in obj['biodata'].keys()])
-                        myTab.add_column(column[2], [d for d in val])
-                        bioTab.add_column(column[2], [d for d in obj['biodata'].values()])
-                        print(myTab)
-                        Utils.print_center("---------------------------------------------")
-                        Utils.print_center("Biodata\n")
-                        print(bioTab)
-                    except KeyError:
-                        print(instance)
 
     def do_destroy(self, line):
         """
@@ -339,7 +339,7 @@ class ReportManager(cmd.Cmd):
                     ...
             if not flag:
                 print("This patient either does not exist or has no biodata filled")
-                ans = Utils.safeInput("Will you like to create a new Patient? Y/N")
+                ans = Utils.safeInput("Will you like to create a new Patient? Y/N => ")
                 while ans.lower() not in ['y', 'n']:
                     ans = input("Type Y/N for the above question")
                 if ans.lower() == "y":

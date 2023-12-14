@@ -143,31 +143,19 @@ class ReportManager(cmd.Cmd):
             all_objs = storage.all()
             for obj_id in all_objs.keys():
                 obj = all_objs[obj_id]
-                if obj['id'] == arg_list[1]:
-                    my_class = globals()[arg_list[0]]
-                    instance = my_class(**obj)
-                    instance.to_table()
-                    int_dict = instance.to_dict()
-                    for data in int_dict.keys():
-                        if isinstance(int_dict[data], dict):
-                            Utils.print_center("----------------------------------")
-                            Utils.print_center(f"{data.capitalize()}\n")
-                            print(tabulate(int_dict[data]))
-                else:
-                    try:
-                        if obj['patient_id'] == arg_list[1]:
-                            my_class = globals()[arg_list[0]]
-                            instance = my_class(**obj)
-                            instance.to_table()
-                            int_dict = instance.to_dict()
-                            for data in int_dict.keys():
-                                if isinstance(int_dict[data], dict):
-                                    Utils.print_center("----------------------------------")
-                                    Utils.print_center(f"{data.capitalize()}\n")
-                                    print(tabulate(int_dict[data]))
-                            
-                    except (AttributeError, KeyError):
-                        continue
+                try:
+                    if obj['id'] == arg_list[1] or obj['patient_id'] == arg_list[1]:
+                        my_class = globals()[arg_list[0]]
+                        instance = my_class(**obj)
+                        instance.to_table()
+                        int_dict = instance.to_dict()
+                        for data in int_dict.keys():
+                            if isinstance(int_dict[data], dict):
+                                Utils.print_center("----------------------------------")
+                                Utils.print_center(f"{data.capitalize()}\n")
+                                print(tabulate(int_dict[data]))
+                except(AttributeError, KeyError):
+                    continue
 
 
     def do_destroy(self, line):

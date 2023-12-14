@@ -27,13 +27,17 @@ class Patient(BaseModel):
             self.bio_data()
             pc = Complaint()
             pc.patient_id = self.id
+            self.patient_id = pc.id
             pc.save()
             history = History()
             history.patient_id = self.id
+            self.history_id = history.id
             history.save()
             review = Review()
             review.patient_id = self.id
+            self.review_id = review.id
             review.save()
+            self.save()
     
 
     def bio_data(self):

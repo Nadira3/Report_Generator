@@ -318,8 +318,10 @@ class ReportManager(cmd.Cmd):
                             for data in obj['biodata']:
                                 if isinstance(obj['biodata'][data], str) and\
                                     ag_list[0].lower() == obj['biodata'][data].lower():
-                                    pat = obj['biodata']
-                                    print(f"The id for {pat['first_name']} {pat['last_name']} is {obj['id']}")
+                                    # this is obsolete since it prints a table
+                                    # pat = obj['biodata']
+                                    # print(f"The id for {pat['first_name']} {pat['last_name']} is {obj['id']}")
+                                    print(tabulate(obj))
                                     flag = 1
                         except KeyError:
                             pass

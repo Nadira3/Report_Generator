@@ -6,7 +6,21 @@
 import datetime
 import uuid
 import models
+from prettytable import PrettyTable
 
+def tabulate(object_dict):
+    objTab = PrettyTable()
+
+    column = ["index", "attr", "value"]
+    objTab._max_width = {"value" : 50}
+    col = [data for data in object_dict.keys()]
+    val = [data if not isinstance(data, dict) else "" for data in object_dict.values()]
+    
+    objTab.add_column(column[0], [d for d in range(len(col))])
+    objTab.add_column(column[1], [d for d in col])
+    objTab.add_column(column[2], [d for d in val])
+
+    return objTab
 
 class BaseModel:
     """
@@ -63,3 +77,8 @@ class BaseModel:
                 object_dict[key] = value
         object_dict["__class__"] = self.__class__.__name__
         return object_dict
+
+    def to_table(self):
+        object_dict = self.to_dict()
+        objTab = tabulate(object_dict)
+        return objTab

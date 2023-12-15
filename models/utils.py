@@ -31,11 +31,13 @@ class Utils:
             print("\nYou are about to terminate a session, all data will be lost if you continue")
             try:
                 var = input("Would you like to exit this session anyway?! Y/N => ")
+                while var.lower() not in ['y', 'n']:
+                    ans = input("Type Y/N for the above question => ")
                 if var.lower() == "y":
                     print("Session ended")
                     sys.exit()
-                while var.lower() != "n":
-                    print("Type either Y/N")
+                else:
+                    return(input(text))
             except (KeyboardInterrupt, EOFError):
                 print("Session ended")
                 sys.exit()

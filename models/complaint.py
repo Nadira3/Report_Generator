@@ -67,9 +67,9 @@ class Complaint(BaseModel):
             # analyze the symptom
             for cee in the_five_cs:
                 if cee == "complaint":
-                    Complaint.hpc[cee] = symptom
+                    Complaint.hpc[symptom + "_" + cee] = symptom
                 else:
-                    Complaint.hpc[cee] = Utils.safeInput(f"Write on the [{colored(cee, 'blue')}] of this symptom =>  ")
+                    Complaint.hpc[symptom + "_" + cee] = Utils.safeInput(f"Write on the [{colored(cee, 'blue')}] of this symptom [{colored(symptom, 'blue')}] =>  ")
             
 
             data = list(direct_questions.keys())
@@ -88,9 +88,9 @@ class Complaint(BaseModel):
                         response = Utils.safeInput(f"Enter in details the history of this symptom if present [{colored(system_symptom, 'blue')}] => ")
                         if response != '' and Utils.checkLine(system_symptom):
                             catch = Utils.checkLine(system_symptom)
-                            Complaint.hpc[system_symptom] = xterize(catch)
+                            Complaint.hpc[symptom + "_" + system_symptom] = xterize(catch)
                         else:
-                            Complaint.hpc[system_symptom] = response
+                            Complaint.hpc[symptom + "_" + system_symptom] = response
                 else:
                     print(colored("System not in the list, spell correctly in small letters", "black", "on_red"))
 

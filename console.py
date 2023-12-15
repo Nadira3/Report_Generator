@@ -183,6 +183,7 @@ class ReportManager(cmd.Cmd):
                     except (AttributeError, KeyError):
                         pass
             storage.save()
+            print(f"{line} destroyed successfully!")
 
 
     def do_all(self, line):

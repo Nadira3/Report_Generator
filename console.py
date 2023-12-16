@@ -47,7 +47,7 @@ class ReportManager(cmd.Cmd):
 
     def postloop(self):
         print()
-        Utils.print_center(colored("Bye!!".center(30, '×'), "black", "on_red"))
+        Utils.print_center(colored("Bye!!".center(30, '-'), "black", "on_red"))
         print()
 
     def do_quit(self, line):
@@ -266,6 +266,8 @@ class ReportManager(cmd.Cmd):
                             cmd.Cmd.onecmd(self, string)
                             string = arg_list[1] +\
                                 f" {arg_list[0]} {arg_list[2]} "
+            else:
+                return cmd.Cmd.default(self, f"{arg_list[1]}")
         else:
             return cmd.Cmd.default(self, line)
 
